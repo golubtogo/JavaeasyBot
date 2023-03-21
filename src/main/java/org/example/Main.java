@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,15 +36,23 @@ public class Main extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Long chatId = getChatId(update);
 
-        SendMessage msg = createMessage("*Hello* Nataliia");
-        attachButtons(msg, Map.of(
-                "BTN 1", "hello_btn_1",
-                "BTN 2", "hello_btn_2"
-        ));
-        msg.setChatId(chatId);
-        sendApiMethodAsync(msg);
-
+        if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
+            SendMessage message = createMessage("Привіт!");
+            message.setChatId(chatId);
+            attachButtons(message, Map.of(
+                    "Слава Україні", "glory_for_ukraine"
+            ));
+            sendApiMethodAsync(message);
+        }
+        if (update.hasCallbackQuery()){
+            if (update.getCallbackQuery().getData().equals("glory_for_ukraine")){
+                SendMessage message = createMessage("Героям Слава!");
+                message.setChatId(chatId);
+                sendApiMethodAsync(message);
+            }
+        }
     }
+
     public Long getChatId(Update update){
         if (update.hasMessage()){
             return update.getMessage().getFrom().getId();
@@ -55,7 +64,7 @@ public class Main extends TelegramLongPollingBot {
     }
     public SendMessage createMessage(String text){
         SendMessage message = new SendMessage();
-        message.setText(text);
+        message.setText(new String(text.getBytes(), StandardCharsets.UTF_8));
         message.setParseMode("markdown");
         return message;
 
@@ -68,7 +77,7 @@ public class Main extends TelegramLongPollingBot {
             String buttonValue = buttons.get(buttonName);
 
             InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(buttonName);
+            button.setText(new String(buttonName.getBytes(), StandardCharsets.UTF_8));
             button.setCallbackData(buttonValue);
 
             keyboard.add(Arrays.asList(button));
