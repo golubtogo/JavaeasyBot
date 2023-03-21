@@ -40,13 +40,18 @@ public class Main extends TelegramLongPollingBot {
             SendMessage message = createMessage("Привіт!");
             message.setChatId(chatId);
             attachButtons(message, Map.of(
-                    "Слава Україні", "glory_for_ukraine"
+                    "Слава Україні!", "glory_for_ukraine",
+                    "Слава Нації!", "glory_for_people"
             ));
             sendApiMethodAsync(message);
         }
         if (update.hasCallbackQuery()){
             if (update.getCallbackQuery().getData().equals("glory_for_ukraine")){
                 SendMessage message = createMessage("Героям Слава!");
+                message.setChatId(chatId);
+                sendApiMethodAsync(message);
+            } else if (update.getCallbackQuery().getData().equals("glory_for_people")) {
+                SendMessage message = createMessage("Смерть ворогам!");
                 message.setChatId(chatId);
                 sendApiMethodAsync(message);
             }
