@@ -2,20 +2,22 @@ package org.example;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Main extends TelegramLongPollingBot {
+
+    private Map<Long, Integer> levels = new HashMap<>();
 
     public static void main(String[] args) throws TelegramApiException {
         TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
@@ -37,25 +39,45 @@ public class Main extends TelegramLongPollingBot {
         Long chatId = getChatId(update);
 
         if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
-            SendMessage message = createMessage("Привіт!");
+            //Send image level 1
+            sendImage("level-1", chatId);
+
+            //Send message
+            SendMessage message = createMessage("Ґа-ґа-ґа!\n" +
+                    "Вітаємо у боті біолабораторії «Батько наш Бандера».\n" +
+                    "\n" +
+                    "Ти отримуєш гусака №71\n" +
+                    "\n" +
+                    "Цей бот ми створили для того, щоб твій гусак прокачався з рівня звичайної свійської худоби до рівня біологічної зброї, здатної нищити ворога. \n" +
+                    "\n" +
+                    "Щоб звичайний гусак перетворився на бандерогусака, тобі необхідно:\n" +
+                    "✔️виконувати завдання\n" +
+                    "✔️переходити на наступні рівні\n" +
+                    "✔️заробити достатню кількість монет, щоб придбати Джавеліну і зробити свєрхтра-та-та.\n" +
+                    "\n" +
+                    "*Гусак звичайний.* Стартовий рівень.\n" +
+                    "Бонус: 5 монет.\n" +
+                    "Обери завдання, щоб перейти на наступний рівень");
             message.setChatId(chatId);
+
             attachButtons(message, Map.of(
-                    "Слава Україні!", "glory_for_ukraine",
-                    "Слава Нації!", "glory_for_people"
+                    "Сплести маскувальну сітку (+15 монет)\n", "level_1_task",
+                    "Зібрати кошти патріотичними піснями (+15 монет) \n", "level_1_task",
+                    "Вступити в Міністерство Мемів України (+15 монет) ", "level_1_task"
             ));
             sendApiMethodAsync(message);
         }
-        if (update.hasCallbackQuery()){
-            if (update.getCallbackQuery().getData().equals("glory_for_ukraine")){
-                SendMessage message = createMessage("Героям Слава!");
-                message.setChatId(chatId);
-                sendApiMethodAsync(message);
-            } else if (update.getCallbackQuery().getData().equals("glory_for_people")) {
-                SendMessage message = createMessage("Смерть ворогам!");
-                message.setChatId(chatId);
-                sendApiMethodAsync(message);
-            }
-        }
+//        if (update.hasCallbackQuery()){
+//            if (update.getCallbackQuery().getData().equals("glory_for_ukraine")){
+//                SendMessage message = createMessage("Героям Слава!");
+//                message.setChatId(chatId);
+//                sendApiMethodAsync(message);
+//            } else if (update.getCallbackQuery().getData().equals("glory_for_people")) {
+//                SendMessage message = createMessage("Смерть ворогам!");
+//                message.setChatId(chatId);
+//                sendApiMethodAsync(message);
+//            }
+//        }
     }
 
     public Long getChatId(Update update){
@@ -91,4 +113,27 @@ public class Main extends TelegramLongPollingBot {
         markup.setKeyboard(keyboard);
         message.setReplyMarkup(markup);
     }
+
+    public void sendImage(String name, long chatId){
+
+        SendAnimation animation = new SendAnimation();
+
+        InputFile inputFile = new InputFile();
+        inputFile.setMedia(new File("images/" + name + ".gif"));
+
+        animation.setAnimation(inputFile);
+        animation.setChatId(chatId);
+
+        executeAsync(animation);
+    }
+
+    public int getLevel(Long chatId){
+        return levels.getOrDefault(chatId, 1);
+    }
+
+    public void setLevel(Long chaId, int level){
+        levels.put(chaId, level);
+    }
 }
+
+
