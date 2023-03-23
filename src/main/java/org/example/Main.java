@@ -91,24 +91,23 @@ public class Main extends TelegramLongPollingBot {
                 sendApiMethodAsync(message);
 
             }
-            else if (update.getCallbackQuery().getData().equals("level_1_task") && getLevel(chatId) == 2){
+            else if (update.getCallbackQuery().getData().equals("level_2_task") && getLevel(chatId) == 2){
                 //increase level
-                setLevel(chatId, 2);
+                setLevel(chatId, 3);
 
                 //Send image
                 sendImage("level-3", chatId);
 
                 //Send message
-                SendMessage message = createMessage("\n" +
-                        "*Вітаємо на другому рівні! Твій гусак - біогусак.*\n" +
-                        "Баланс: 20 монет. \n" +
+                SendMessage message = createMessage("*Вітаємо на третьому рівні! Твій гусак - бандеростажер.*\n" +
+                        "Баланс: 35 монет. \n" +
                         "Обери завдання, щоб перейти на наступний рівень");
                 message.setChatId(chatId);
 
                 attachButtons(message, Map.of(
-                        "Зібрати комарів для нової біологічної зброї (+15 монет) \n", "level_2_task",
-                        "Пройти курс молодого бійця (+15 монет) \n", "level_2_task",
-                        "Задонатити на ЗСУ (+15 монет)  \n", "level_2_task"
+                        "Злітати на тестовий рейд по чотирьох позиціях (+15 монет) \n", "level_3_task",
+                        "Відвезти гуманітарку на передок (+15 монет) \n", "level_3_task",
+                        "Знайти зрадника та здати в СБУ (+15 монет) \n", "level_3_task"
                 ));
                 sendApiMethodAsync(message);
 
