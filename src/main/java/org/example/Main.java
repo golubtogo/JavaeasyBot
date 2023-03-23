@@ -65,19 +65,55 @@ public class Main extends TelegramLongPollingBot {
                     "Зібрати кошти патріотичними піснями (+15 монет) \n", "level_1_task",
                     "Вступити в Міністерство Мемів України (+15 монет) ", "level_1_task"
             ));
+
             sendApiMethodAsync(message);
         }
-//        if (update.hasCallbackQuery()){
-//            if (update.getCallbackQuery().getData().equals("glory_for_ukraine")){
-//                SendMessage message = createMessage("Героям Слава!");
-//                message.setChatId(chatId);
-//                sendApiMethodAsync(message);
-//            } else if (update.getCallbackQuery().getData().equals("glory_for_people")) {
-//                SendMessage message = createMessage("Смерть ворогам!");
-//                message.setChatId(chatId);
-//                sendApiMethodAsync(message);
-//            }
-//        }
+        if (update.hasCallbackQuery()){
+            if (update.getCallbackQuery().getData().equals("level_1_task") && getLevel(chatId) == 1){
+                //increase level
+                setLevel(chatId, 2);
+
+                //Send image
+                sendImage("level-2", chatId);
+
+                //Send message
+                SendMessage message = createMessage("\n" +
+                        "*Вітаємо на другому рівні! Твій гусак - біогусак.*\n" +
+                        "Баланс: 20 монет. \n" +
+                        "Обери завдання, щоб перейти на наступний рівень");
+                message.setChatId(chatId);
+
+                attachButtons(message, Map.of(
+                        "Зібрати комарів для нової біологічної зброї (+15 монет) \n", "level_2_task",
+                        "Пройти курс молодого бійця (+15 монет) \n", "level_2_task",
+                        "Задонатити на ЗСУ (+15 монет)  \n", "level_2_task"
+                ));
+                sendApiMethodAsync(message);
+
+            }
+            else if (update.getCallbackQuery().getData().equals("level_1_task") && getLevel(chatId) == 2){
+                //increase level
+                setLevel(chatId, 2);
+
+                //Send image
+                sendImage("level-3", chatId);
+
+                //Send message
+                SendMessage message = createMessage("\n" +
+                        "*Вітаємо на другому рівні! Твій гусак - біогусак.*\n" +
+                        "Баланс: 20 монет. \n" +
+                        "Обери завдання, щоб перейти на наступний рівень");
+                message.setChatId(chatId);
+
+                attachButtons(message, Map.of(
+                        "Зібрати комарів для нової біологічної зброї (+15 монет) \n", "level_2_task",
+                        "Пройти курс молодого бійця (+15 монет) \n", "level_2_task",
+                        "Задонатити на ЗСУ (+15 монет)  \n", "level_2_task"
+                ));
+                sendApiMethodAsync(message);
+
+            }
+        }
     }
 
     public Long getChatId(Update update){
